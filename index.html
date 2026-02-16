@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ratatouille: Hair-Pull Chaos</title>
+  <link rel="stylesheet" href="styles.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/matter-js/0.20.0/matter.min.js"></script>
+</head>
+
+<body>
+  <!-- Main Menu -->
+  <div id="main-menu" class="menu-screen">
+    <div class="menu-bg-overlay"></div>
+    <div class="menu-content main-content">
+      <h1 class="game-title">Ratatouille <br><span class="subtitle">Hair-Pull Chaos</span></h1>
+
+      <div id="primary-menu">
+        <button id="play-btn" class="menu-btn primary">Start Cooking</button>
+        <button id="how-to-btn" class="menu-btn">How to Play</button>
+        <button id="credits-btn" class="menu-btn">Credits</button>
+        <button id="main-settings-btn" class="menu-btn">Settings</button>
+      </div>
+
+      <div id="difficulty-menu" class="hidden">
+        <p class="section-title">Select Your Station</p>
+        <div class="difficulty-selection">
+          <button class="menu-btn difficulty-btn" data-difficulty="easy">Commis (Easy)</button>
+          <button class="menu-btn difficulty-btn" data-difficulty="medium">Sous Chef (Medium)</button>
+          <button class="menu-btn difficulty-btn" data-difficulty="hard">Chef de Cuisine (Hard)</button>
+        </div>
+        <button id="back-to-main-btn" class="menu-btn secondary">Back</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modals -->
+  <div id="how-to-modal" class="menu-screen overlay-screen hidden">
+    <div class="modal-content parchment">
+      <h2>How to Cook</h2>
+      <div class="instructions-grid">
+        <div class="instr-item">
+          <span class="key">A</span> / <span class="key">D</span>
+          <p>Move Linguini left and right</p>
+        </div>
+        <div class="instr-item">
+          <span class="key">O</span> / <span class="key">P</span>
+          <p>Raise Left / Right arms</p>
+        </div>
+      </div>
+      <p class="goal-text">Catch the ingredients in the soup pot! Don't let them hit the floor or the critics will
+        panic!</p>
+      <button class="menu-btn close-modal">Got it!</button>
+    </div>
+  </div>
+
+  <div id="credits-modal" class="menu-screen overlay-screen hidden">
+    <div class="modal-content parchment">
+      <h2>Kitchen Staff</h2>
+      <ul class="credits-list">
+        <li>Executive Chef: <span>Antigravity AI</span></li>
+        <li>Art Director: <span>Kitchen Assets</span></li>
+        <li>Music: <span>Jazz Ensemble</span></li>
+      </ul>
+      <p>Inspired by Pixar's Ratatouille</p>
+      <button class="menu-btn close-modal">Back to Kitchen</button>
+    </div>
+  </div>
+
+  <!-- Game UI Overlay -->
+  <div id="game-ui" class="game-ui hidden">
+    <div class="parchment-panel">
+      <div class="ui-row">
+        <button id="menu-btn" class="icon-btn">☰</button>
+        <div class="ui-meter">
+          <span class="meter-label">Fruit Salad</span>
+          <div class="meter-bar soup-quality">
+            <div class="meter-fill" id="soup-meter"></div>
+          </div>
+          <span class="meter-value" id="soup-value">0%</span>
+        </div>
+        <div class="ui-meter">
+          <span class="meter-label">Panic Meter</span>
+          <div class="meter-bar panic-meter">
+            <div class="meter-fill panic-fill" id="panic-meter"></div>
+          </div>
+          <span class="meter-value" id="panic-value">0%</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- In-Game Settings Menu -->
+  <div id="settings-menu" class="menu-screen overlay-screen hidden">
+    <div class="settings-content">
+      <h2>Kitchen Menu</h2>
+      <div class="settings-group">
+        <div class="setting-item">
+          <label>Music Volume</label>
+          <input type="range" id="volume-slider" min="0" max="1" step="0.01" value="0.5">
+        </div>
+        <div class="setting-item">
+          <label>Sound Effects</label>
+          <label class="switch">
+            <input type="checkbox" id="sfx-toggle" checked>
+            <span class="slider round"></span>
+          </label>
+        </div>
+      </div>
+      <div class="menu-actions">
+        <button id="resume-btn" class="menu-btn">Resume Cooking</button>
+        <button id="home-btn" class="menu-btn secondary">Main Menu</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Game Container with Screen Shake -->
+  <div id="game-container">
+    <canvas id="game-canvas"></canvas>
+  </div>
+
+  <div id="win-screen" class="menu-screen overlay-screen hidden">
+    <div class="win-content">
+      <div class="star-rating">
+        <span class="star">★</span>
+        <span class="star">★</span>
+        <span class="star">★</span>
+        <span class="star">★</span>
+        <span class="star">★</span>
+      </div>
+      <h2>Magnifique!</h2>
+      <p>The critics are stunned. This fruit salad is a masterpiece!</p>
+      <button id="replay-win-btn" class="menu-btn replay">Back to Menu</button>
+    </div>
+  </div>
+
+  <div id="loss-screen" class="menu-screen overlay-screen hidden">
+    <div class="loss-content">
+      <div class="skinner-silhouette"></div>
+      <h2>Disaster!</h2>
+      <p>The health inspector is here. The kitchen is closed!</p>
+      <button id="replay-loss-btn" class="menu-btn replay">Back to Menu</button>
+    </div>
+  </div>
+
+  <script src="game.js"></script>
+
+  <!-- Hidden SVG for background removal filter -->
+  <svg width="0" height="0" style="position:absolute; pointer-events:none;">
+    <filter id="bg-remove" color-interpolation-filters="sRGB">
+      <feColorMatrix type="matrix" values="
+        1 0 0 0 0
+        0 1 0 0 0
+        0 0 1 0 0
+        -4 -4 -4 1 11
+      " />
+    </filter>
+  </svg>
+</body>
+
+</html>
