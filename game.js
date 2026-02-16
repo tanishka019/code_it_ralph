@@ -30,7 +30,7 @@ let feedbackTexts = [];
 const kitchenImg = new Image();
 kitchenImg.src = 'assests/kitchen.jpeg';
 const chefImg = new Image();
-chefImg.src = 'assests/chef.jpeg';
+chefImg.src = 'assests/chef.png';
 const fruitImages = {
   banana: new Image(),
   grape: new Image(),
@@ -565,7 +565,7 @@ function drawOpenHand(x, y, angle, scale, isLeft) {
 function drawRemy() {
   const scale = linguini?.scale ?? Math.min(canvas.width, canvas.height) / 800;
   const cx = linguini?.x ?? canvas.width / 2;
-  const headTop = canvas.height * 0.88 - 195 * scale;
+  const headTop = canvas.height * 0.88 - 95 * scale;
 
   remyHairPull = 0.5 + Math.sin(hatWobble * 0.5) * 0.2;
 
